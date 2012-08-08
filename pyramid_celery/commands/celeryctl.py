@@ -1,6 +1,10 @@
+import celery
 from pyramid_celery.commands import CommandMixin
 from celery.bin.celeryctl import celeryctl as BaseCeleryCtl
-from celery.bin.celeryctl import help as BaseHelp
+if celery.__version__ > '2.6.0':
+    from celery.bin.celery import help as BaseHelp
+else:
+    from celery.bin.celeryctl import help as BaseHelp
 
 
 class Help(BaseHelp):
