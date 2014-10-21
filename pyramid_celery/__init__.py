@@ -2,7 +2,7 @@
 from datetime import timedelta
 from celery.schedules import crontab
 
-from celery.app import default_app
+from celery.app import current_app
 from celery.app import defaults
 
 def str_to_bool(term, table={"false": False, "no": False, "0": False,
@@ -39,7 +39,7 @@ def convert_celery_options(config):
     Converts celery options to apropriate types
     """
 
-    for key, value in config.iteritems():
+    for key, value in config.items():
         opt_type = OPTIONS.get(key)
         if opt_type:
             if opt_type[0] == str:
@@ -53,6 +53,7 @@ def convert_celery_options(config):
                 config[key] = opt_type[1](value)
 
 def includeme(config):
+    app = current_app()
     convert_celery_options(config.registry.settings)
-    default_app.config_from_object(config.registry.settings)
-    default_app.config = config
+    app.config_from_object(config.registry.settings)
+    app.config = config
